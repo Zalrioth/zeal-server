@@ -1,11 +1,12 @@
-#include <stdio.h>
-
 #include "socket.h"
-
-#pragma comment(lib, "ws2_32.lib")
 
 // Only ran when standalone server is hosted
 int main(int argc, char **argv) {
+  // TODO: Bad for performance flush manually on release? Yes, configure for debug only
+  // Checked seems print operations per tick have huge cpu use
+  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stderr, NULL, _IONBF, 0);
+
   struct ZealSocket zeal_socket;
   socket_init(&zeal_socket);
 
@@ -15,6 +16,8 @@ int main(int argc, char **argv) {
 
     socket_recieve(&zeal_socket, buf);
     socket_send(&zeal_socket, buf);
+
+    sleep((1 / 30.0f) * 1000);
   }
 
   socket_delete(&zeal_socket);
